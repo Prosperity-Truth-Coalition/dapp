@@ -3,16 +3,14 @@ import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import type { AppProps } from 'next/app';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { arbitrum, goerli, mainnet, optimism, polygon } from 'wagmi/chains';
+import { bsc } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
+import { RecoilRoot } from 'recoil';
+import { darkTheme } from '@rainbow-me/rainbowkit';
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [
-    mainnet,
-    polygon,
-    optimism,
-    arbitrum,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true' ? [goerli] : []),
+    bsc,
   ],
   [publicProvider()]
 );
@@ -33,8 +31,15 @@ const wagmiConfig = createConfig({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <Component {...pageProps} />
+      <RainbowKitProvider chains={chains} theme={darkTheme({
+      accentColor: '#111',
+      accentColorForeground: 'white',
+      
+    })}>
+      <RecoilRoot>
+          <Component {...pageProps} />
+        </RecoilRoot>
+
       </RainbowKitProvider>
     </WagmiConfig>
   );
