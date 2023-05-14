@@ -8,11 +8,23 @@ import { useRecoilValue } from "recoil";
 import { selectedTabState } from "../atoms/selectedTab";
 import { Toaster } from "react-hot-toast";
 import Staking from "../components/StakingPortal/Staking";
+import { useEffect, useState } from "react";
+import PreLoader from "../components/Preloader/PreLoader";
 
 
 const Home: NextPage = () => {
 
   const selectedTab = useRecoilValue(selectedTabState);
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 3000);
+  }, [])
+
+
+
 
   return (
     <div className=" w-full min-h-[100vh] px-4 py-4 sm:px-8 sm:py-6 lg:px-12">
@@ -22,20 +34,24 @@ const Home: NextPage = () => {
         <link href="/favicon.ico" rel="icon" />
       </Head>
       <Toaster />
-      <header className="   sm:px-12  sm:gap-12">
-      <Header />
-      </header>
-      
-      <main className="mt-8 px-6 flex flex-col gap-8 sm:px-12 sm:mt-16 sm:gap-12">
-        <Stats />
-        <Tabs />
-        
-        {selectedTab === "burn" && <Burn />}
-        {selectedTab === "stake" && <Staking />}
+      {loading ? <PreLoader /> :
+        <>
+          <header className="   sm:px-12  sm:gap-12">
+            <Header />
+          </header>
 
-        
-        {/* <Burn/> */}
-      </main>
+          <main className="mt-8 px-6 flex flex-col gap-8 sm:px-12 sm:mt-16 sm:gap-12">
+            <Stats />
+            <Tabs />
+
+            {selectedTab === "burn" && <Burn />}
+            {selectedTab === "stake" && <Staking />}
+
+
+            {/* <Burn/> */}
+          </main>
+        </>
+      }
     </div>
   );
 };

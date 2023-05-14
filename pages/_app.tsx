@@ -32,11 +32,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains} theme={darkTheme({
-      accentColor: '#111',
-      accentColorForeground: 'white',
-      
-    })}>
-      <RecoilRoot>
+        accentColor: '#111',
+        accentColorForeground: 'white',
+
+      })}>
+        <RecoilRoot>
           <Component {...pageProps} />
         </RecoilRoot>
 
