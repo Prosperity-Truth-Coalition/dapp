@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@pancakeswap/sdk": "^4.0.0",
     "@rainbow-me/rainbowkit": "^1.0.0",
     "@wagmi/core": "^1.0.2",
     "dexscreener-api": "^0.0.7",
@@ -20,7 +21,8 @@
     "recoil": "^0.7.7",
     "tailwind-scrollbar": "^3.0.1",
     "viem": "~0.3.19",
-    "wagmi": "^1.0.1"
+    "wagmi": "^1.0.1",
+    "web3-units": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^17.0.35",

@@ -125,7 +125,8 @@ const Staking = () => {
     address: config.staking as Address,
     functionName: "stake",
     args: [humanToEther(stakeAmount, 8)],
-    "value": bnbFee,
+    // @ts-ignore
+    value: bnbFee,
   })
   const { isSuccess, writeAsync } = useContractWrite(stakePrepareConfig);
 

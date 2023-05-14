@@ -160,6 +160,7 @@ const Swap = () => {
     abi: erc20ABI,
     address: selectedValue1.address as Address,
     functionName: "approve",
+    // @ts-ignore
     args: [config.router as Address, BigNumber.from(MAX_INT)],
   });
 
