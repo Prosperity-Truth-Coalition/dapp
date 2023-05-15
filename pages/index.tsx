@@ -1,3 +1,4 @@
+
 import type { NextPage } from "next";
 import Head from "next/head";
 import Header from "../components/Header/Header";
@@ -10,6 +11,9 @@ import { Toaster } from "react-hot-toast";
 import Staking from "../components/StakingPortal/Staking";
 import { useEffect, useState } from "react";
 import PreLoader from "../components/Preloader/PreLoader";
+import Script from "next/script";
+
+
 
 
 const Home: NextPage = () => {
@@ -23,7 +27,17 @@ const Home: NextPage = () => {
     }, 2500);
   }, [])
 
+  useEffect(() => {
+    if(window){
+      //@ts-ignore
 
+      if(eruda){
+        //@ts-ignore
+        eruda.init();
+      }
+      
+    }
+  }, [])
 
 
   return (
@@ -32,7 +46,10 @@ const Home: NextPage = () => {
         <title>PTC Dapp</title>
         <meta content="$PTC Token is bringing value and utility! Buy it, Win it, Sell it, Stake it, Burn it, and Spend it! Come join our amazing community today!" name="description" />
         <link href="/favicon.ico" rel="icon" />
+        
+        
       </Head>
+      <Script src="//cdn.jsdelivr.net/npm/eruda"></Script>
       <Toaster />
       {loading ? <PreLoader /> :
         <>
