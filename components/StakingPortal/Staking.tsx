@@ -236,8 +236,8 @@ const Staking = () => {
         <div className="flex flex-col gap-2 text-[#494949] font-medium">
           <div className="flex ">
             <div className="staking-info ">
-              <p>Max Stake : {abbreviateNumber(humanFriendlyBalance(Number(minStakingAmount), 8))} PTC </p>
-              <p>Min Stake : {abbreviateNumber(humanFriendlyBalance(Number(maxStakingAmount), 8))} PTC</p>
+              <p>Min Stake : {abbreviateNumber(humanFriendlyBalance(Number(minStakingAmount), 8))} PTC </p>
+              <p>Max Stake : {abbreviateNumber(humanFriendlyBalance(Number(maxStakingAmount), 8))} PTC</p>
               <p>Total Staked : {abbreviateNumber(humanFriendlyBalance(Number(totalStaked), 8))} PTC</p>
             </div>
             <div className="cost-info ml-auto text-right">
