@@ -19,6 +19,7 @@ const Staking = () => {
 
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
+  
   const { data } = useBalance({
     address: address,
   })
@@ -120,17 +121,28 @@ const Staking = () => {
   }
 
 
-  const { config: stakePrepareConfig, error: stakePrepareError } = usePrepareContractWrite({
+  const { config: stakePrepareConfig, error: stakePrepareError,refetch} = usePrepareContractWrite({
     abi: config.stakingAbi,
+    enabled: true,
     address: config.staking as Address,
     functionName: "stake",
     args: [humanToEther(stakeAmount, 8)],
     // @ts-ignore
     value: bnbFee,
   })
+
+  const {data: allowance  } = useContractRead({
+    abi: erc20ABI,
+    address: config.address as Address,
+    functionName: "allowance",
+    enabled: true,
+    args: [address as Address, config.staking as Address],
+  });
+
   const { isSuccess, writeAsync } = useContractWrite(stakePrepareConfig);
 
   async function stake() {
+    
 
     if (stakePrepareError) {
       if (stakePrepareError.message.includes("User denied transaction signature.")) {
@@ -146,7 +158,14 @@ const Staking = () => {
         return;
       }
       if (stakePrepareError.message.includes("Insufficient token allowance")) {
+        toast.error("Insufficient token allowance, Approving now...");
         await approveSpends();
+        await refetch();
+        toast.success("Approved! Please stake again");
+        return;
+
+        
+        
 
       }
       if (stakePrepareError.message.includes("Already staked")) {
@@ -166,9 +185,6 @@ const Staking = () => {
       toast.error(stakePrepareError.message);
       return;
     }
-
-
-
     if (typeof writeAsync !== "function") return;
     const promise = writeAsync();
     if (promise) {
