@@ -232,7 +232,7 @@ const Staking = () => {
     }
   }
 
-  const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean>;
+  const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | Boolean>: [0,0,false];
 
 
 
@@ -331,7 +331,7 @@ const Staking = () => {
           <button
             onClick={stake}
             className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
-            disabled={!isConnected || !isStakingEnabled || stakingData_[2] == true}
+            disabled={!isConnected || !isStakingEnabled || stakingData_ ? stakingData_[2] == true : false}
 
           >
             {stakingData_ && stakingData_[2] == true ? <span className="animate-pulse flex gap-2">
