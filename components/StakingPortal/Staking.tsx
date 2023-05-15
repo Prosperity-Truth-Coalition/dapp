@@ -203,7 +203,7 @@ const Staking = () => {
               hash: txHash.hash,
             });
             toast.dismiss(toastId);
-            toast.success("Burnt", {
+            toast.success("Staked!", {
               icon: "👏",
               style: {
                 borderRadius: "10px",
