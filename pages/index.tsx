@@ -46,10 +46,12 @@ const Home: NextPage = () => {
         <title>PTC Dapp</title>
         <meta content="$PTC Token is bringing value and utility! Buy it, Win it, Sell it, Stake it, Burn it, and Spend it! Come join our amazing community today!" name="description" />
         <link href="/favicon.ico" rel="icon" />
+        {/* @ts-ignore */}
+        <script src="//cdn.jsdelivr.net/npm/eruda"></script>
         
         
       </Head>
-      <Script src="//cdn.jsdelivr.net/npm/eruda"></Script>
+      
       <Toaster />
       {loading ? <PreLoader /> :
         <>
