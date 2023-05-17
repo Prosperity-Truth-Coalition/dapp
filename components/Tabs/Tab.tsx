@@ -21,7 +21,7 @@ export default function Tab(props: TabProps) {
     <button
       className={`bg-[#111111] gap-3 text-white flex px-2 w-[136px] py-1.5 rounded-sm relative ${
         isSelected
-          ? "border-4 border-t-0 border-l-0 border-r-0 border-pink-100"
+          ? "border-4 border-t-0 border-l-0 border-r-0 border-[#c5a364]"
           : ""
       }`}
       disabled={props.comingSoon}
@@ -35,7 +35,7 @@ export default function Tab(props: TabProps) {
         {props.title}
 
         {props.comingSoon && (
-          <span className="absolute rounded-lg top-[-10px] right-0 bg-pink-100 text-black px-1.5 py-0.5  font-light text-xs">
+          <span className="absolute rounded-lg top-[-10px] right-0 bg-[#c5a364] text-black px-1.5 py-0.5  font-light text-xs">
             * Soon
           </span>
         )}

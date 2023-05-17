@@ -11,7 +11,7 @@ interface StatProps {
 export default function Stat(props: StatProps) {
   return (
     <div
-      className={`bg-[#111111] p-4  flex flex-col gap-2 drop-shadow-xl text-white font-extrabold border-2 border-t-0  border-b-1  border-r-1 border-l-0 border-pink-100`}
+      className={`bg-[#111111] p-4  flex flex-col gap-2 drop-shadow-xl text-white font-extrabold border-2 border-t-0  border-b-1  border-r-1 border-l-0 border-[#c5a364]`}
     >
       <h1 className="font-regular">{props.title}</h1>
       <p
