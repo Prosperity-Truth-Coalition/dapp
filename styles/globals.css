@@ -12,7 +12,6 @@ body ,html{
   margin: 0;
   background-image: url('https://syntax.tailwindui.com/_next/static/media/blur-cyan.d28a5585.png');
   background-size: cover;
-
 }
 
 @layer base {
