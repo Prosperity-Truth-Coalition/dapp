@@ -29,7 +29,7 @@ const Home: NextPage = () => {
   return (
     <div className=" w-full min-h-[100vh] px-4 py-4 sm:px-8 sm:py-6 lg:px-12">
       <Head>
-        <title>PTC Dapp</title>
+        <title>PTC - Prosperity Truth Coalition</title>
         <meta content="$PTC Token is bringing value and utility! Buy it, Win it, Sell it, Stake it, Burn it, and Spend it! Come join our amazing community today!" name="description" />
         <link href="/favicon.ico" rel="icon" />
       </Head>
