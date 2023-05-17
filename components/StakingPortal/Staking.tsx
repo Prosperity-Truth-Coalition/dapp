@@ -278,7 +278,7 @@ const Staking = () => {
                 Claim
               </button>
               {!rewardsClaimable &&
-                <span className="absolute rounded-lg top-[-10px] right-0 bg-pink-100 text-black px-1.5 py-0.5  font-light text-xs">
+                <span className="absolute rounded-lg top-[-10px] right-0 bg-[#c5a364] text-black px-1.5 py-0.5  font-light text-xs">
                   Not Active
                 </span>}
 
