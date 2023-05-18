@@ -121,7 +121,7 @@ body {
 body ,html{
   padding: 0;
   margin: 0;
-  background-image: url('/fonts/https://syntax.tailwindui.com/_next/static/media/blur-cyan.d28a5585.png');
+  background-image: url('https://syntax.tailwindui.com/_next/static/media/blur-cyan.d28a5585.png');
   background-size: cover;
 }
 

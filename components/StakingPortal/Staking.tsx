@@ -265,20 +265,20 @@ const Staking = () => {
           </div>
 
           <div className="flex gap-2 justify-end text-[#FFFFFFF5] mt-4 ">
-            <button onClick={() => setActiveTab("stake")} className={`${activeTab == "stake" ? "bg-[#2C2C2C]" : "bg-[#101010]"} py-[12px] px-[20px] rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]`}>
+            <button onClick={() => setActiveTab("stake")} className={`${activeTab == "stake" ? "bg-[#2C2C2C]" : "bg-[#101010]"} py-[12px] px-[20px]  pt-1 rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]`}>
               Stake
             </button>
             <div className="relative">
               <button
                 onClick={() => setActiveTab("claim")}
                 disabled
-                className={` py-[12px] px-[20px] rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]`}>
+                className={` py-[12px] pt-1 px-[20px] rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]`}>
 
 
                 Claim
               </button>
               {!rewardsClaimable &&
-                <span className="absolute rounded-lg top-[-10px] right-0 bg-[#c5a364] text-black px-1.5 py-0.5  font-light text-xs">
+                <span className="absolute rounded-lg top-[-15px] right-0 pb-1 bg-[#c5a364] text-black px-1.5 py-0.5  font-light text-xs">
                   Not Active
                 </span>}
 
@@ -330,7 +330,7 @@ const Staking = () => {
 
           <button
             onClick={stake}
-            className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
+            className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
             disabled={!isConnected || !isStakingEnabled || stakingData_ ? stakingData_[2] == true : false}
 
           >

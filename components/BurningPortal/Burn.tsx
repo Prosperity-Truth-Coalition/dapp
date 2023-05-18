@@ -182,7 +182,7 @@ export default function Burn() {
 
           <button
             type="submit"
-            className="w-full mt-2 bg-black rounded-lg py-2 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
+            className="w-full mt-2 bg-black rounded-lg py-2 pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
           >
             Burn
           </button>
