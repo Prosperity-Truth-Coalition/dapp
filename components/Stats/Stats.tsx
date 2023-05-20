@@ -111,8 +111,8 @@ export default function Stats() {
         isDynamic={true}
         value={
           pairInfo.pairs
-            ? pairInfo.pairs[0].fdv
-              ? pairInfo.pairs[0].fdv.toString() + " USD"
+            ? pairInfo.pairs[0]?.fdv
+              ? pairInfo.pairs[0]?.fdv.toString() + " USD"
               : ""
             : "0"
         }
@@ -123,8 +123,8 @@ export default function Stats() {
         isgreen={true}
         value={
           pairInfo.pairs
-            ? pairInfo.pairs[0].priceUsd
-              ? pairInfo.pairs[0].priceUsd.toString() + " USD"
+            ? pairInfo.pairs[0]?.priceUsd
+              ? pairInfo.pairs[0]?.priceUsd.toString() + " USD"
               : ""
             : "0"
         }
