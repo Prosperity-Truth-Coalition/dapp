@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContractRead, usePrepareContractWrite } from "wagmi";
 import { writeContract, prepareWriteContract } from "@wagmi/core";
 import toast from "react-hot-toast";
@@ -17,9 +17,19 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 const Staking = () => {
 
+  const [stakeValidity, setStakeValidity] = useState(false);
+
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
-  
+
+  useEffect(() => {
+    if(address){
+      fetch(`${config.api}/is_valid/${address}`).then((res) => res.json()).then((data) => {
+        setStakeValidity(data.is_valid);
+      });
+    }
+  }, [address]);
+
   const { data } = useBalance({
     address: address,
   })
@@ -30,6 +40,13 @@ const Staking = () => {
   function humanToEther(amount: number, decimals: number) {
     return amount * (10 ** decimals);
   }
+
+  const {data : xrpBalance }  = useContractRead({
+    abi: erc20ABI,
+    address: config.rewardToken as Address,
+    functionName: "balanceOf",
+    args: [config.staking as Address],
+  });
 
   const { data: userBalance } = useContractRead({
     abi: erc20ABI,
@@ -121,7 +138,7 @@ const Staking = () => {
   }
 
 
-  const { config: stakePrepareConfig, error: stakePrepareError,refetch} = usePrepareContractWrite({
+  const { config: stakePrepareConfig, error: stakePrepareError, refetch } = usePrepareContractWrite({
     abi: config.stakingAbi,
     enabled: true,
     address: config.staking as Address,
@@ -131,7 +148,7 @@ const Staking = () => {
     value: bnbFee,
   })
 
-  const {data: allowance  } = useContractRead({
+  const { data: allowance } = useContractRead({
     abi: erc20ABI,
     address: config.address as Address,
     functionName: "allowance",
@@ -142,7 +159,7 @@ const Staking = () => {
   const { isSuccess, writeAsync } = useContractWrite(stakePrepareConfig);
 
   async function stake() {
-    
+
 
     if (stakePrepareError) {
       if (stakePrepareError.message.includes("User denied transaction signature.")) {
@@ -164,8 +181,8 @@ const Staking = () => {
         toast.success("Approved! Please stake again");
         return;
 
-        
-        
+
+
 
       }
       if (stakePrepareError.message.includes("Already staked")) {
@@ -232,7 +249,26 @@ const Staking = () => {
     }
   }
 
-  const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | Boolean>: [0,0,false];
+  const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | Boolean> : [0, 0, false];
+
+  const getUserPoolShare = () => {
+    const humanFriendlyXRPBalance = humanFriendlyBalance(Number(xrpBalance),18);
+    const humanFriendlyTotalStaked = humanFriendlyBalance(totalStaked,config.decimals);
+    const userStaked = humanFriendlyBalance(stakingData_[0],config.decimals);
+    const poolShare = (parseFloat(userStaked) / parseFloat(humanFriendlyTotalStaked)) * 100;
+    const xrpReward = (poolShare / 100) * parseFloat(humanFriendlyXRPBalance) ;
+    const xrpRewardRounded = xrpReward;
+    const poolShareRounded = poolShare.toFixed(2);
+
+
+    return {
+      "poolShare": poolShareRounded,
+      "xrpReward": xrpRewardRounded
+    };
+    
+  }
+
+  
 
 
 
@@ -271,74 +307,115 @@ const Staking = () => {
             <div className="relative">
               <button
                 onClick={() => setActiveTab("claim")}
-                disabled
-                className={` py-[12px] pt-1 px-[20px] rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]`}>
+
+                className={`${activeTab == "claim" ? "bg-[#2C2C2C]" : "bg-[#101010]"} py-[12px] pt-1 px-[20px] rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]`}>
 
 
                 Claim
               </button>
-              {!rewardsClaimable &&
+              {/* {!rewardsClaimable &&
                 <span className="absolute rounded-lg top-[-15px] right-0 pb-1 bg-[#c5a364] text-black px-1.5 py-0.5  font-light text-xs">
                   Not Active
-                </span>}
+                </span>} */}
 
             </div>
 
           </div>
         </div>
+        {activeTab == "stake" && (
+          <div className="flex flex-col gap-2">
+            <label htmlFor="stakeAmount" className="font-medium">
+              Stake Amount
+            </label>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="stakeAmount" className="font-medium">
-            Stake Amount
-          </label>
 
 
+            <div className="relative">
+              <input
+                type="text"
+                id="stakeAmount"
+                value={stakeAmount}
+                onChange={(e) => {
+                  if (e.target.value == "") {
+                    setStakeAmount(0)
+                  }
+                  else {
+                    setStakeAmount(parseFloat(e.target.value))
+                  }
 
-          <div className="relative">
-            <input
-              type="text"
-              id="stakeAmount"
-              value={stakeAmount}
-              onChange={(e) => {
-                if (e.target.value == "") {
-                  setStakeAmount(0)
-                }
-                else {
-                  setStakeAmount(parseFloat(e.target.value))
-                }
+                }}
+                className={`${isConnected ? "hover:border-[#FFFFFF] focus:border-[#FFFFFF]" : ""
+                  } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}
+                placeholder="0"
+              />
+              <button
 
-              }}
-              className={`${isConnected ? "hover:border-[#FFFFFF] focus:border-[#FFFFFF]" : ""
-                } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}
-              placeholder="0"
-            />
+                onClick={() => {
+                  setStakeAmount(parseFloat(humanFriendlyBalance(BigNumber.from(userBalance).sub(BigNumber.from(burnFee)), 8)));
+                }}
+
+                className="absolute top-0 right-0 h-8 p-2 m-1 bg-[#2C2C2C] w-20  text-xs font-light mt-2  rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]">
+                Max
+              </button>
+            </div>
+            <div className="flex justify-between items-center">
+
+              <p className="text-sm"> Balance: {abbreviateNumber(humanFriendlyBalance(userBalance, 8))} PTC</p>
+              <p className="text-sm"> {data ? parseFloat(data.formatted).toFixed(2) : 0} BNB</p>
+            </div>
+
             <button
+              onClick={stake}
+              className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
+              disabled={!isConnected || !isStakingEnabled || stakingData_ ? stakingData_[2] == true : false}
 
-              onClick={() => {
-                setStakeAmount(parseFloat(humanFriendlyBalance(BigNumber.from(userBalance).sub(BigNumber.from(burnFee)), 8)));
-              }}
-
-              className="absolute top-0 right-0 h-8 p-2 m-1 bg-[#2C2C2C] w-20  text-xs font-light mt-2  rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]">
-              Max
+            >
+              {stakingData_ && stakingData_[2] == true ? <span className="animate-pulse flex gap-2">
+                <Timer className="h-5 animate-spin" /> Staked : {humanFriendlyBalance(stakingData_[0], 8)} PTC
+              </span> : isStakingEnabled == true ? "Stake" : "!! Staking Paused !!"}
             </button>
           </div>
-          <div className="flex justify-between items-center">
+        )}
 
-            <p className="text-sm"> Balance: {abbreviateNumber(humanFriendlyBalance(userBalance, 8))} PTC</p>
-            <p className="text-sm"> {data ? parseFloat(data.formatted).toFixed(2) : 0} BNB</p>
+
+        {activeTab == "claim" && (
+          <div className="flex flex-col gap-2">
+            <label htmlFor="stakeAmount" className="font-medium">
+              Claim Portal
+            </label>
+
+
+
+            <div className="relative">
+              <input
+                type="text"
+                id="stakeAmount"
+                value={getUserPoolShare().xrpReward}
+                disabled
+                className={`${isConnected ? "hover:border-[#FFFFFF] focus:border-[#FFFFFF]" : ""
+                  } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}
+                placeholder="0"
+              />
+             
+            </div>
+            <div className="flex justify-between items-center">
+
+              <p className="text-sm"> Pool Share: {getUserPoolShare().poolShare} %</p>
+              <p className="text-sm"> Validity: {stakeValidity.toString()}</p>
+              
+            </div>
+
+            <button
+              onClick={stake}
+              className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
+              disabled={!rewardsClaimable}
+
+            >
+              {rewardsClaimable ? "Claim" : "!! Not Active !!"}
+            </button>
           </div>
+        )}
 
-          <button
-            onClick={stake}
-            className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
-            disabled={!isConnected || !isStakingEnabled || stakingData_ ? stakingData_[2] == true : false}
-
-          >
-            {stakingData_ && stakingData_[2] == true ? <span className="animate-pulse flex gap-2">
-              <Timer className="h-5 animate-spin" /> Staked : {humanFriendlyBalance(stakingData_[0], 8)} PTC
-            </span> : isStakingEnabled == true ? "Stake" : "!! Staking Paused !!"}
-          </button>
-        </div>
       </div>
 
       <div className="text-white flex flex-col items-start gap-10 px-4 md:px-2 md:w-[50%] lg:w-[60%]">

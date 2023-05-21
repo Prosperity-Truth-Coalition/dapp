@@ -4,6 +4,7 @@ export const config = {
   address: "0xf382A28AAb0320e48D3D751f696f935B014B49BD",
   blackhole: "0x000000000000000000000000000000000000dead",
   staking: "0xB606f35517Da24776dc76b8cbd7FC8752Bb06a35",
+  rewardToken : "0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE",
   chainId: 56,
   decimals: 8,
   stakingAbi:[
@@ -1122,6 +1123,7 @@ export const config = {
     },
     { stateMutability: "payable", type: "receive" },
   ],
+  api : "https://squid-app-ywxtd.ondigitalocean.app"
 };
 
 export function abbreviateNumber(number){
