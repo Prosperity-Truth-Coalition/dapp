@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import Staking from "../components/StakingPortal/Staking";
 import { useEffect, useState } from "react";
 import PreLoader from "../components/Preloader/PreLoader";
+import Footer from "../components/Footer";
 
 
 const Home: NextPage = () => {
@@ -50,7 +51,9 @@ const Home: NextPage = () => {
 
             {/* <Burn/> */}
           </main>
+          <Footer/>
         </>
+
       }
     </div>
   );
