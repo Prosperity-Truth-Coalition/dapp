@@ -15,11 +15,10 @@ export default function Tab(props: TabProps) {
 
   const isSelected = selectedTab === props.title.toLowerCase();
 
-  console.log(selectedTab, props.title.toLowerCase(), isSelected);
 
   return (
     <button
-      className={`bg-[#111111] gap-3 text-white flex px-2 w-[136px] py-1.5 rounded-sm relative ${
+      className={`bg-[#111111] gap-3 text-white flex px-2 w-[136px] py-1.5 rounded-sm relative pb-2 ${
         isSelected
           ? "border-4 border-t-0 border-l-0 border-r-0 border-[#c5a364]"
           : ""

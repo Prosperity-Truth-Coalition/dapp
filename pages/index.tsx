@@ -51,7 +51,7 @@ const Home: NextPage = () => {
 
             {selectedTab === "burn" && <Burn />}
             {selectedTab === "stake" && <Staking />}
-            {selectedTab === "dex" && <Dex />}
+            {selectedTab === "trade" && <Dex />}
 
 
             {/* <Burn/> */}
