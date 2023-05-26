@@ -223,7 +223,7 @@ export default function Burn() {
             required
             onChange={(e) => {
               if(!e.target.value) return ;
-              setBurnAmount(parseFloat(e.target.value));
+              setBurnAmount(BigNumber.from(parseFloat(e.target.value)));
             }}
             className="bg-[#1A1A1A] rounded-lg px-2 py-2 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear hover:border-[#FFFFFF] focus:border-[#FFFFFF]"
           />
