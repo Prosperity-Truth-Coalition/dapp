@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import PreLoader from "../components/Preloader/PreLoader";
 import Footer from "../components/Footer";
 import Dex from "../components/DexWidget/Dex";
-import Script from 'next/script';
+
 
 
 const Home: NextPage = () => {
@@ -35,14 +35,8 @@ const Home: NextPage = () => {
         <title>PTC - Prosperity Truth Coalition</title>
         <meta content="$PTC Token is bringing value and utility! Buy it, Win it, Sell it, Stake it, Burn it, and Spend it! Come join our amazing community today!" name="description" />
         <link href="/favicon.ico" rel="icon" />
-        <script src="https://launch.rbx.ae/widgetari/arbitor.js"></script>
-        <Script
-        src="https://launch.rbx.ae/widgetari/arbitor.js"
-        strategy="beforeInteractive"
-        onLoad={() =>
-          console.log(`arbitor.js loaded`)
-        }
-      />
+       
+        
       </Head>
       <Toaster />
       {loading ? <PreLoader /> :
