@@ -94,10 +94,21 @@ export default function Stats() {
     return "0";
   };
 
+  const getStakedPercentage = () => {
+    if (totalSupply && totalStaked) {
+      const BigtotalStaked = BigNumber.from(totalStaked);
+      const BigtotalSupply = BigNumber.from(totalSupply);
+      return BigtotalStaked.mul(100).div(BigtotalSupply).toString();
+    }
+    return "0";
+  };
+
+
   return (
     <div className="grid flex-col gap-4 sm:flex-row sm:flex-wrap sm:gap-8 sm:grid-cols-2 md:grid-cols-3">
       <Stat
         title="Total Supply"
+        isOrange={true}
         value={
           totalSupply
             ? humanFriendlyBalance(totalSupply.toString(), config.decimals)
@@ -137,7 +148,8 @@ export default function Stats() {
       <Stat
         title="Total Staked"
         isOrange={true}
-        value={(totalStaked ? getNormalizedInteger(parseInt(humanFriendlyBalance(totalStaked,config.decimals))) : "0") + " PTC"  } 
+        className="font-light text-blurple"
+        value={(totalStaked ? getNormalizedInteger(parseInt(humanFriendlyBalance(totalStaked,config.decimals))) : "0") + " PTC"  + " \n(" + getStakedPercentage() + "% of Supply)"  } 
       />
     </div>
   );

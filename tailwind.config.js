@@ -9,7 +9,16 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "blurple": "#5865F2",
+        "greenish": "#57F287",
+        "yellowish": "#FEE75C",
+        "fushia": "#EB459E",
+        "redish": "#ED4245",
+      },
+        
+    },
   },
   plugins: [
     require("tailwind-scrollbar"),
