@@ -3,6 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+.mantine-Modal-body	{
+  background: transparent !important;
+}
+
+.mantine-Modal-header{
+  display: none;
+}
+
+.mantine-Paper-root {
+  background: transparent !important;
+}
 
 @font-face {
   font-family: 'FMBolyar Sans Pro 300';

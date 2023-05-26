@@ -10,11 +10,14 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { BigNumber, ethers } from "ethers";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useDisclosure } from '@mantine/hooks';
+import { Modal } from '@mantine/core';
 
 export default function Burn() {
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
-  const [burnAmount, setBurnAmount] = useState(0);
+  const [burnAmount, setBurnAmount] = useState(BigNumber.from(0));
+  const [opened, { open, close }] = useDisclosure(false);
 
   const { data: userBalance } = useContractRead({
     abi: erc20ABI,
@@ -25,8 +28,9 @@ export default function Burn() {
 
   function parseBalance(number: string, decimals: number) {
     //take integer or float and convert to wei but 8 decimal places
-    const balance = ethers.utils.parseUnits(number, decimals);
-    return balance;
+    
+    const balance = ethers.utils.parseUnits(number, decimals );
+    return balance.toString();
   }
 
   const { config: burnConfig, error: burnPrepareError } =
@@ -40,12 +44,12 @@ export default function Burn() {
       ],
     });
 
+    
+
   const { data, isLoading, isSuccess, writeAsync } =
     useContractWrite(burnConfig);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
+  function handleBurn(e: React.FormEvent<HTMLFormElement>) {
     if ((BigNumber.from(userBalance).lt(parseBalance(burnAmount.toString(), config.decimals)))) {
       toast.error("Insufficient Balance", {
         icon: "🙅",
@@ -58,7 +62,7 @@ export default function Burn() {
       return;
 
     }
-    console.log("burnAmount", burnAmount, burnPrepareError);
+
     if (burnPrepareError) {
       console.log("burnPrepareError", burnPrepareError.message);
       if (
@@ -88,6 +92,7 @@ export default function Burn() {
         toast.error("User denied transaction signature.");
       }
       else {
+        console.log("burnPrepareError", burnPrepareError);
         toast.error(burnPrepareError.message, {
           icon: "👏",
           style: {
@@ -148,6 +153,11 @@ export default function Burn() {
     }
   }
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    open();
+  }
+
   return (
     <section
       className={`rounded-xl flex flex-col gap-6 pb-8 md:pb-0 md:gap-8 mb-8 md:flex-row ${!isConnected ? "bg-black pointer-events-none" : ""
@@ -159,6 +169,47 @@ export default function Burn() {
           } bg-[#111111] rounded-xl p-4 pb-8 text-white flex flex-col gap-4 md:p-6 md:pb-10 md:w-[50%] lg:w-[40%]`}
       >
         <h1 className="font-[100] text-lg">Burn $PTC</h1>
+        <Modal opened={opened} onClose={close} centered  >
+          <div className="max-w-sm w-full bg-[#1A1B1F] shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5">
+            <div className="p-4">
+              <div className="flex items-start">
+                
+                <div className="ml-3 w-0 flex-1">
+                  <p className="text-sm font-medium text-orange-500">You are about to burn PTC.</p>
+                  <p className="mt-1 text-xs text-gray-500">Are you sure you want to continue ?</p>
+                  <div className="mt-4 flex">
+                    <button
+                    onClick={handleBurn}
+                      type="button"
+                      className="inline-flex items-center px-3 py-2 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-redish  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-bg-redish"
+                    >
+                      BURN
+                    </button>
+                    <button
+                      type="button"
+                      onClick={close}
+                      className="ml-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+                <div className="ml-4 flex-shrink-0 flex">
+                  <button
+                    className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    onClick={close}
+                  >
+                    <span className="sr-only">Close</span>
+
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </Modal>
+
 
         <div className="flex flex-col gap-2">
           <label htmlFor="burnAmount" className="font-medium">
@@ -171,6 +222,7 @@ export default function Burn() {
             id="burnAmount"
             required
             onChange={(e) => {
+              if(!e.target.value) return ;
               setBurnAmount(parseFloat(e.target.value));
             }}
             className="bg-[#1A1A1A] rounded-lg px-2 py-2 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear hover:border-[#FFFFFF] focus:border-[#FFFFFF]"
@@ -204,7 +256,7 @@ export default function Burn() {
 
           <div>
             <p>
-            Our Community Burn Portal is a key pillar in slowly reducing the Circulating Supply of PTC. Burn Reflections earned from TVL of others' Trades and Transfers without hurting your natural position!
+              Our Community Burn Portal is a key pillar in slowly reducing the Circulating Supply of PTC. Burn Reflections earned from TVL of others' Trades and Transfers without hurting your natural position!
             </p>
           </div>
         </div>
