@@ -23,9 +23,9 @@ export default function Tabs() {
       />
       <Tab
         title="Trade"
-        comingSoon={true}
+        comingSoon={false}
         onClick={() => {
-          setSelectedTab("trade");
+          setSelectedTab("dex");
         }}
       />
       

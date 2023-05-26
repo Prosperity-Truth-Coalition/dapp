@@ -204,7 +204,7 @@ export default function Burn() {
 
           <div>
             <p>
-              $PTC Token is bringing value and utility! Buy it, Win it, Sell it, Stake it, Burn it, and Spend it! Come join our amazing community today!
+            Our Community Burn Portal is a key pillar in slowly reducing the Circulating Supply of PTC. Burn Reflections earned from TVL of others' Trades and Transfers without hurting your natural position!
             </p>
           </div>
         </div>
