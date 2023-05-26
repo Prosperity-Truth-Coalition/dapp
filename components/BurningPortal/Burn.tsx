@@ -49,7 +49,7 @@ export default function Burn() {
   const { data, isLoading, isSuccess, writeAsync } =
     useContractWrite(burnConfig);
 
-  function handleBurn(e: React.FormEvent<HTMLFormElement>) {
+  function handleBurn() {
     if ((BigNumber.from(userBalance).lt(parseBalance(burnAmount.toString(), config.decimals)))) {
       toast.error("Insufficient Balance", {
         icon: "🙅",
