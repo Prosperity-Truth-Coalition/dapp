@@ -29,9 +29,9 @@ export default function Dex() {
                 className={`${!isConnected ? "brightness-50" : ""
                     } bg-[#111111] rounded-xl p-2 pb-8 text-white flex flex-col gap-4 md:p-6 md:pb-10 md:w-[50%] lg:w-[40%]`}
             >
-                <h1 className="font-[100] text-lg">TRADE</h1>
-                <div className="">
-                    <iframe className="min-h-100 min-w-full"  src="https://launch.rbx.ae/dexwidget?spending_token=0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE&spending_chain_id=56&bl=true&receiving_token=0xf382A28AAb0320e48D3D751f696f935B014B49BD&receiving_chain_id=56&ref_wallet=0x6d8f8CAC87CcE303fE7391549C7A357f0D98D09a" id="_RBX_DEX_WIDGET" />
+                <h1 className="font-[100] text-lg p-2 ">TRADE</h1>
+                <div className="min-h-[554px] ">
+                    <iframe className="min-h-[554px] min-w-[100%] "  src="https://launch.rbx.ae/dexwidget?spending_token=0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE&spending_chain_id=56&bl=true&receiving_token=0xf382A28AAb0320e48D3D751f696f935B014B49BD&receiving_chain_id=56&ref_wallet=0x6d8f8CAC87CcE303fE7391549C7A357f0D98D09a" id="_RBX_DEX_WIDGET" />
 
                 </div>
 
