@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useContractRead, usePrepareContractWrite } from "wagmi";
-import { writeContract, prepareWriteContract } from "@wagmi/core";
+import { writeContract } from "@wagmi/core";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 import { erc20ABI } from "wagmi";
 import { config, humanFriendlyBalance, abbreviateNumber, humanFriendlyBalanceWithFixed } from "../../config/contracts.js";
 import type { Address } from "wagmi";
 import { Timer } from "iconsax-react";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useBalance } from "wagmi";
 import { useContractWrite } from "wagmi";
 import { waitForTransaction } from "@wagmi/core";
@@ -15,15 +15,20 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 
 
+
 const Staking = () => {
 
   const [stakeValidity, setStakeValidity] = useState(false);
+  const [lastStakeTimeStamp, setLastStakeTimeStamp] = useState(0);
+  
+  const [timeLeft, setTimeLeft] = useState("00:00:00");
+  const [timeLeftForClaim, setTimeLeftForClaim] = useState("00:00:00");
 
   const { openConnectModal } = useConnectModal();
   const { address, isConnected } = useAccount();
 
   useEffect(() => {
-    if(address){
+    if (address) {
       fetch(`${config.api}/is_valid/${address}`).then((res) => res.json()).then((data) => {
         setStakeValidity(data.is_valid);
       });
@@ -41,7 +46,7 @@ const Staking = () => {
     return amount * (10 ** decimals);
   }
 
-  const {data : xrpBalance }  = useContractRead({
+  const { data: xrpBalance } = useContractRead({
     abi: erc20ABI,
     address: config.rewardToken as Address,
     functionName: "balanceOf",
@@ -252,11 +257,11 @@ const Staking = () => {
   const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | Boolean> : [0, 0, false];
 
   const getUserPoolShare = () => {
-    const humanFriendlyXRPBalance = humanFriendlyBalance(Number(xrpBalance),18);
-    const humanFriendlyTotalStaked = humanFriendlyBalance(totalStaked,config.decimals);
-    const userStaked = humanFriendlyBalance(stakingData_[0],config.decimals);
+    const humanFriendlyXRPBalance = humanFriendlyBalance(Number(xrpBalance), 18);
+    const humanFriendlyTotalStaked = humanFriendlyBalance(totalStaked, config.decimals);
+    const userStaked = humanFriendlyBalance(stakingData_[0], config.decimals);
     const poolShare = (parseFloat(userStaked) / parseFloat(humanFriendlyTotalStaked)) * 100;
-    const xrpReward = (poolShare / 100) * parseFloat(humanFriendlyXRPBalance) /12;
+    const xrpReward = (poolShare / 100) * parseFloat(humanFriendlyXRPBalance) / 12;
     const xrpRewardRounded = xrpReward;
     const poolShareRounded = poolShare.toFixed(2);
 
@@ -265,10 +270,76 @@ const Staking = () => {
       "poolShare": poolShareRounded,
       "xrpReward": xrpRewardRounded
     };
-    
+
   }
 
-  
+  useEffect(() => {
+    const URL = `${config.api}/last_window`;
+    fetch(URL)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setLastStakeTimeStamp(data.timestamp);
+      });
+  }
+    , []);
+
+
+
+  useEffect(() => {
+    const timeLeftForNewWindow = () => {
+
+
+      const lastStakeTime = new Date(lastStakeTimeStamp * 1000);
+      //future date = lastStakeTime+30 days
+      const futureDate = new Date(lastStakeTime.getTime() + 31 * 24 * 60 * 60 * 1000)
+      const now = new Date();
+
+      const diff = futureDate.getTime() - now.getTime();
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const timeLeft = `${days} D: ${hours} H: ${minutes} M: ${seconds}S`;
+      return timeLeft;
+
+
+    }
+    const timeLeftForClaim = () => {
+      
+      const lastStakeTime = new Date(lastStakeTimeStamp * 1000);
+      //future date = lastStakeTime+30 days
+      const futureDate = new Date(lastStakeTime.getTime() + 30* 24 * 60 * 60 * 1000)
+      const now = new Date();
+
+      const diff = futureDate.getTime() - now.getTime();
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const timeLeft = `${days} D: ${hours} H: ${minutes} M: ${seconds}S`;
+      return timeLeft;
+
+
+    }
+
+
+    const timeInterval = setInterval(() => {
+      
+      setTimeLeft(timeLeftForNewWindow());
+      setTimeLeftForClaim(timeLeftForClaim());
+    }, 1000);
+
+    return () => {
+      clearInterval(timeInterval);
+    }
+  }, [lastStakeTimeStamp]);
+
+
+
+
+
+
 
 
 
@@ -374,6 +445,18 @@ const Staking = () => {
                 <Timer className="h-5 animate-spin" /> Staked : {humanFriendlyBalance(stakingData_[0], 8)} PTC
               </span> : isStakingEnabled == true ? "Stake" : "!! Staking Paused !!"}
             </button>
+            {!isStakingEnabled &&
+              <button
+
+                className="w-full flex p-2 justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
+                disabled
+
+              >
+
+                <Timer className="h-6 animate-spin" />  {timeLeft}
+
+              </button>
+            }
           </div>
         )}
 
@@ -396,13 +479,13 @@ const Staking = () => {
                   } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}
                 placeholder="0"
               />
-             
+
             </div>
             <div className="flex justify-between items-center">
 
               <p className="text-sm"> Pool Share: {getUserPoolShare().poolShare} %</p>
               <p className="text-sm"> Validity: {stakeValidity.toString()}</p>
-              
+
             </div>
 
             <button
@@ -413,6 +496,18 @@ const Staking = () => {
             >
               {rewardsClaimable ? "Claim" : "!! Not Active !!"}
             </button>
+            {!rewardsClaimable &&
+              <button
+
+                className="w-full flex p-2 justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
+                disabled
+
+              >
+
+                <Timer className="h-6 animate-spin" />  {timeLeftForClaim}
+
+              </button>
+            }
           </div>
         )}
 
