@@ -213,7 +213,7 @@ export default function Burn() {
 
         <div className="flex flex-col gap-2">
           <label htmlFor="burnAmount" className="font-medium">
-            Burn Amoun
+            Burn Amount
           </label>
 
           <input
