@@ -257,14 +257,16 @@ const Staking = () => {
   const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | Boolean> : [0, 0, false];
 
   const getUserPoolShare = () => {
-    const humanFriendlyXRPBalance = humanFriendlyBalance(Number(xrpBalance), 18);
+    const humanFriendlyXRPBalance = Number(xrpBalance) / 10 ** 18;
     const humanFriendlyTotalStaked = humanFriendlyBalance(totalStaked, config.decimals);
     const userStaked = humanFriendlyBalance(stakingData_[0], config.decimals);
     const poolShare = (parseFloat(userStaked) / parseFloat(humanFriendlyTotalStaked)) * 100;
-    const xrpReward = (poolShare / 100) * parseFloat(humanFriendlyXRPBalance) / 12;
-    const xrpRewardRounded = xrpReward;
-    const poolShareRounded = poolShare.toFixed(2);
+    const xrpReward = (poolShare / 100) * (humanFriendlyXRPBalance) / 12;
+    const xrpRewardRounded = xrpReward.toFixed(5)
+    const poolShareRounded = poolShare.toFixed();
 
+
+  
 
     return {
       "poolShare": poolShareRounded,
@@ -273,12 +275,14 @@ const Staking = () => {
 
   }
 
+
+
   useEffect(() => {
     const URL = `${config.api}/last_window`;
     fetch(URL)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+       
         setLastStakeTimeStamp(data.timestamp);
       });
   }
@@ -334,6 +338,11 @@ const Staking = () => {
       clearInterval(timeInterval);
     }
   }, [lastStakeTimeStamp]);
+
+
+  useEffect(() => {
+    console.log(getUserPoolShare())
+  }, [stakingData_]);
 
 
 
@@ -473,7 +482,7 @@ const Staking = () => {
               <input
                 type="text"
                 id="stakeAmount"
-                value={getUserPoolShare().xrpReward}
+                value={getUserPoolShare().xrpReward + " XRP"}
                 disabled
                 className={`${isConnected ? "hover:border-[#FFFFFF] focus:border-[#FFFFFF]" : ""
                   } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}
