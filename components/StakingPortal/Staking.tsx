@@ -263,7 +263,7 @@ const Staking = () => {
     const poolShare = (parseFloat(userStaked) / parseFloat(humanFriendlyTotalStaked)) * 100;
     const xrpReward = (poolShare / 100) * (humanFriendlyXRPBalance) / 12;
     const xrpRewardRounded = xrpReward.toFixed(5)
-    const poolShareRounded = poolShare.toFixed();
+    const poolShareRounded = poolShare.toFixed(5);
 
 
   
