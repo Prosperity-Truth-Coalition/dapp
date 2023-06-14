@@ -346,7 +346,7 @@ const Staking = () => {
 
       const lastStakeTime = new Date(lastStakeTimeStamp * 1000);
       //future date = lastStakeTime+30 days
-      const futureDate = new Date(lastStakeTime.getTime() + 31 * 24 * 60 * 60 * 1000)
+      const futureDate = new Date(lastStakeTime.getTime() + 31.4 * 24 * 60 * 60 * 1000)
       const now = new Date();
 
       const diff = futureDate.getTime() - now.getTime();
