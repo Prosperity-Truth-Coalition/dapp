@@ -19,6 +19,8 @@
     "@wagmi/core": "^1.0.2",
     "dexscreener-api": "^0.0.7",
     "iconsax-react": "^0.0.8",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.3.10",
     "next": "^12.2.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

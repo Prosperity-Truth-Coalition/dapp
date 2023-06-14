@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useContractRead, usePrepareContractWrite } from "wagmi";
-import { writeContract } from "@wagmi/core";
+import { writeContract,prepareWriteContract} from "@wagmi/core";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 import { erc20ABI } from "wagmi";
@@ -12,6 +12,15 @@ import { useBalance } from "wagmi";
 import { useContractWrite } from "wagmi";
 import { waitForTransaction } from "@wagmi/core";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { leaves } from "../../config/leave.js";
+import MerkleTree from "merkletreejs";
+import keccak256 from "keccak256";
+
+import { encodePacked} from 'viem';
+import {rewards} from "../../config/rewards.js";
+
+const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
+
 
 
 
@@ -20,6 +29,7 @@ const Staking = () => {
 
   const [stakeValidity, setStakeValidity] = useState(false);
   const [lastStakeTimeStamp, setLastStakeTimeStamp] = useState(0);
+  const [merkleProof, setMerkleProof] = useState<null | String[]>(null);
   
   const [timeLeft, setTimeLeft] = useState("00:00:00");
   const [timeLeftForClaim, setTimeLeftForClaim] = useState("00:00:00");
@@ -256,21 +266,54 @@ const Staking = () => {
 
   const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | Boolean> : [0, 0, false];
 
+
+  const isValidForReward = (address : string) => {
+    const rewards_ = rewards.filter((reward : {
+      address: string;
+      
+
+    }) => reward.address === address);
+    
+    if(rewards_.length > 0){
+      return true;
+    }
+    return false;
+  }
+
+  const getReward = (address:string) => {
+    const rewards_ = rewards.filter((reward : {
+      address: string;
+      
+
+    }) => reward.address === address);
+    return rewards_[0].amount.toString();
+  }
+
+
+
+
   const getUserPoolShare = () => {
     const humanFriendlyXRPBalance = Number(xrpBalance) / 10 ** 18;
     const humanFriendlyTotalStaked = humanFriendlyBalance(totalStaked, config.decimals);
     const userStaked = humanFriendlyBalance(stakingData_[0], config.decimals);
     const poolShare = (parseFloat(userStaked) / parseFloat(humanFriendlyTotalStaked)) * 100;
     const xrpReward = (poolShare / 100) * (humanFriendlyXRPBalance) ;
+
     const xrpRewardRounded = xrpReward.toFixed(5)
     const poolShareRounded = poolShare.toFixed(5);
 
+    
+
     return {
       "poolShare": poolShareRounded,
-      "xrpReward": xrpRewardRounded
+      "xrpReward": xrpRewardRounded,
+      
+      "xrpRewardNotRounded": rewards,
     };
 
   }
+
+
 
 
 
@@ -319,7 +362,7 @@ const Staking = () => {
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
       const timeLeft = `${days} D: ${hours} H: ${minutes} M: ${seconds}S`;
-      if(days <0){
+      if(days < 0){
         return "Being Generated , Please Wait!"
         }
       return timeLeft;
@@ -345,9 +388,147 @@ const Staking = () => {
   }, [stakingData_]);
 
 
+ 
+
+
+  function generateLeaf(address : Address ,amount : bigint){
+
+    
+    
+    const hash = keccak256(encodePacked(
+      ["address", "uint256"],
+      [address, amount]
+    ));
+
+    const string = hash.toString('hex');
+    return "0x"+string;
+
+  }
+
+  useEffect(() => {
+
+      if(address){
+        if(isValidForReward(address)){
+
+          console.log("address is valid for reward")
+          const rewardAmount = getReward(address);
+          const leaf = generateLeaf(address ,BigInt(rewardAmount))
+          const proof = merkleTree.getHexProof(leaf);
+          
+          setMerkleProof(proof);
+        } 
+
+
+      }
+
+
+  }, [address]);
+
+  const { config: claimPrepareConfig, error: claimPrepareError, refetch : refetchClaim} = usePrepareContractWrite({
+    abi: config.stakingAbi,
+    enabled: true,
+    address: config.staking as Address,
+    functionName: "claim",
+    args: [merkleProof,isValidForReward(address as Address) ? getReward(address as Address) : '0'],
+    
+  })
+
+  const { isSuccess:claimSuccess, writeAsync:claimWriteAsync } = useContractWrite(claimPrepareConfig);
+
+  
+
+
+  async function claim() {
+
+
+    if (claimPrepareError) {
+      if(claimPrepareError.message.includes('Value "null" is not a valid array.')){
+        toast.error("You are not eligible for rewards");
+        return;
+      }
+      if (claimPrepareError.message.includes("User denied transaction signature.")) {
+        toast.error("Transaction rejected");
+        return;
+      }
+      if (claimPrepareError.message.includes("Rewards not claimable")) {
+        toast.error("Claims Not Yet Ready");
+        return;
+      }
+      if (claimPrepareError.message.includes("Cannot claim while staking is enabled")) {
+        toast.error("Cannot claim while staking is enabled");
+        return;
+      }
+      //Already claimed
+      if (claimPrepareError.message.includes("Already claimed")) {
+        toast.error("Already Claimed");
+        return;
+      }
+      if(claimPrepareError.message.includes("You are Not whitelisted")){
+        toast.error("You are not eligible for rewards");
+        return;
+      }
+      if(claimPrepareError.message.includes("Not staked")){
+        toast.error("You are not eligible for rewards");
+        return;
+      }
 
 
 
+      
+      
+  
+  
+      toast.error(claimPrepareError.message);
+      return;
+    }
+    if (typeof claimWriteAsync !== "function") return;
+    const promise = claimWriteAsync();
+    if (promise) {
+      promise
+        .then(async (txHash) => {
+          if (txHash) {
+            console.log("txHash", txHash);
+            const toastId = toast.loading("Claiming in progress", {
+              style: {
+                borderRadius: "10px",
+                background: "#333",
+                color: "#fff",
+              },
+            });
+            await waitForTransaction({
+              hash: txHash.hash,
+            });
+            toast.dismiss(toastId);
+            toast.success("Claimed!", {
+              icon: "👏",
+              style: {
+                borderRadius: "10px",
+                background: "#333",
+                color: "#fff",
+              },
+            });
+          }
+        })
+        .catch((error) => {
+          if (error.message.includes("User denied transaction signature.")) {
+            toast.error("User denied transaction signature.");
+          }
+          else {
+            toast.error(error.message, {
+              icon: "🕊",
+              style: {
+                borderRadius: "10px",
+                background: "#333",
+                color: "#fff",
+              },
+            });
+          }
+  
+        });
+    }
+  }
+
+  
 
 
 
@@ -498,9 +679,10 @@ const Staking = () => {
             </div>
 
             <button
-              onClick={stake}
+              onClick={claim}
               className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
               disabled={!rewardsClaimable}
+              
 
             >
               {rewardsClaimable ? "Claim" : "!! Not Active !!"}
