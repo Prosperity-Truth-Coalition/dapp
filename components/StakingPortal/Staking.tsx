@@ -265,9 +265,6 @@ const Staking = () => {
     const xrpRewardRounded = xrpReward.toFixed(5)
     const poolShareRounded = poolShare.toFixed(5);
 
-
-  
-
     return {
       "poolShare": poolShareRounded,
       "xrpReward": xrpRewardRounded
@@ -322,6 +319,9 @@ const Staking = () => {
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
       const timeLeft = `${days} D: ${hours} H: ${minutes} M: ${seconds}S`;
+      if(days <0){
+        return "Being Generated , Please Wait!"
+        }
       return timeLeft;
 
 
