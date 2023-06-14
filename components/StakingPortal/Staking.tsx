@@ -290,6 +290,16 @@ const Staking = () => {
   }
 
 
+  const getStaticReward = (address:Address) => {
+    if(!isValidForReward(address)){
+      return 0;
+    }
+
+     
+   const reward = getReward(address);
+    const reward_ = (parseFloat(reward) / (10 ** 18)).toFixed(5);
+    return reward_.toString();
+  }
 
 
   const getUserPoolShare = () => {
@@ -663,7 +673,7 @@ const Staking = () => {
               <input
                 type="text"
                 id="stakeAmount"
-                value={getUserPoolShare().xrpReward + " XRP"}
+                value={getStaticReward(address) + " XRP"}
                 disabled
                 className={`${isConnected ? "hover:border-[#FFFFFF] focus:border-[#FFFFFF]" : ""
                   } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}
