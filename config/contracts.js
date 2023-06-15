@@ -3,7 +3,7 @@ export const config = {
   router: "0x10ed43c718714eb63d5aa57b78b54704e256024e",
   address: "0xf382A28AAb0320e48D3D751f696f935B014B49BD",
   blackhole: "0x000000000000000000000000000000000000dead",
-  staking: "0xB606f35517Da24776dc76b8cbd7FC8752Bb06a35",
+  staking: "0x5ff907B4A29A06D98b319cD442DbC812688C418F",
   rewardToken : "0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE",
   chainId: 56,
   decimals: 8,
@@ -361,6 +361,58 @@ export const config = {
     },
     {
       "inputs": [],
+      "name": "lastClaimDisabledAt",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "lastClaimEnabledAt",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "lastStakeDisabledAt",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "lastStakeEnabledAt",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "maxStakingAmount",
       "outputs": [
         {
@@ -388,6 +440,19 @@ export const config = {
     {
       "inputs": [],
       "name": "minStakingAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "newWindowInitiatedAt",
       "outputs": [
         {
           "internalType": "uint256",
@@ -460,6 +525,11 @@ export const config = {
         {
           "internalType": "uint256",
           "name": "stakeTime",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "balanceAsOfStaking",
           "type": "uint256"
         },
         {

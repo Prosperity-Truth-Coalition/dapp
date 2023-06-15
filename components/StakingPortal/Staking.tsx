@@ -212,6 +212,10 @@ const Staking = () => {
         toast.error("Amount is more than maximum staking amount");
         return;
       }
+      if(stakePrepareError.message.includes("Arithmic operation resulted in underflow or overflow.")) {
+        toast.error("Amount is less than minimum staking amount");
+        return;
+      }
 
 
       toast.error(stakePrepareError.message);
@@ -578,16 +582,16 @@ const Staking = () => {
             <div className="relative">
               <button
                 onClick={() => setActiveTab("claim")}
-
+                disabled
                 className={`${activeTab == "claim" ? "bg-[#2C2C2C]" : "bg-[#101010]"} py-[12px] pt-1 px-[20px] rounded-[12px] transition-all duration-200 ease-linear hover:bg-[#2c2c2cd5]`}>
 
 
                 Claim
               </button>
-              {/* {!rewardsClaimable &&
+              {!rewardsClaimable &&
                 <span className="absolute rounded-lg top-[-15px] right-0 pb-1 bg-[#c5a364] text-black px-1.5 py-0.5  font-light text-xs">
                   Not Active
-                </span>} */}
+                </span>}
 
             </div>
 
@@ -673,7 +677,7 @@ const Staking = () => {
               <input
                 type="text"
                 id="stakeAmount"
-                value={getStaticReward(address) + " XRP"}
+                value={getStaticReward(address as Address) + " XRP"}
                 disabled
                 className={`${isConnected ? "hover:border-[#FFFFFF] focus:border-[#FFFFFF]" : ""
                   } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}
