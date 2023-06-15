@@ -127,6 +127,8 @@ const Staking = () => {
     args: [currentStakingId, address as Address],
   });
 
+  
+
 
 
 
@@ -268,7 +270,7 @@ const Staking = () => {
     }
   }
 
-  const stakingData_ = stakingData as Array<BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | Boolean> : [0, 0, false];
+  const stakingData_ = stakingData as Array<BigNumber | BigNumber |BigNumber| Boolean> ? stakingData as Array<BigNumber | BigNumber | BigNumber| Boolean> : [0, 0,0, false];
 
 
   const isValidForReward = (address : string) => {
@@ -642,11 +644,11 @@ const Staking = () => {
             <button
               onClick={stake}
               className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
-              disabled={!isConnected || !isStakingEnabled || stakingData_ ? stakingData_[2] == true : false}
+              disabled={!isConnected || !isStakingEnabled || stakingData_ ? stakingData_[3] == true : false}
 
             >
-              {stakingData_ && stakingData_[2] == true ? <span className="animate-pulse flex gap-2">
-                <Timer className="h-5 animate-spin" /> Staked : {humanFriendlyBalance(stakingData_[0], 8)} PTC
+              {stakingData_ && stakingData_[3] == true ? <span className="animate-pulse flex gap-2">
+                <Timer className="h-6 mt-2 animate-spin" /> Staked : {abbreviateNumber(humanFriendlyBalance(stakingData_[0], 8))} PTC
               </span> : isStakingEnabled == true ? "Stake" : "!! Staking Paused !!"}
             </button>
             {!isStakingEnabled &&
