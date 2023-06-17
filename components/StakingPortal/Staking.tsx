@@ -30,6 +30,7 @@ const Staking = () => {
   const [stakeValidity, setStakeValidity] = useState(false);
   const [lastStakeTimeStamp, setLastStakeTimeStamp] = useState(0);
   const [merkleProof, setMerkleProof] = useState<null | String[]>(null);
+
   
   const [timeLeft, setTimeLeft] = useState("00:00:00");
   const [timeLeftForClaim, setTimeLeftForClaim] = useState("00:00:00");
@@ -62,6 +63,13 @@ const Staking = () => {
     functionName: "balanceOf",
     args: [config.staking as Address],
   });
+
+  const { data: lastStakeDisabledAt } = useContractRead({
+    abi: config.stakingAbi,
+    address: config.staking as Address,
+    functionName: "lastStakeDisabledAt",
+  });
+
 
   const { data: userBalance } = useContractRead({
     abi: erc20ABI,
@@ -350,7 +358,7 @@ const Staking = () => {
     const timeLeftForNewWindow = () => {
 
 
-      const lastStakeTime = new Date(lastStakeTimeStamp * 1000);
+      const lastStakeTime = new Date(lastStakeDisabledAt ? Number(lastStakeDisabledAt.toString()) * 1000 : new Date().getTime() * 1000);
       //future date = lastStakeTime+30 days
       const futureDate = new Date(lastStakeTime.getTime() + 31.4 * 24 * 60 * 60 * 1000)
       const now = new Date();
@@ -367,7 +375,7 @@ const Staking = () => {
     }
     const timeLeftForClaim = () => {
       
-      const lastStakeTime = new Date(lastStakeTimeStamp * 1000);
+      const lastStakeTime = new Date(lastStakeDisabledAt ? Number(lastStakeDisabledAt.toString()) * 1000 : new Date().getTime() * 1000);
       //future date = lastStakeTime+30 days
       const futureDate = new Date(lastStakeTime.getTime() + 30* 24 * 60 * 60 * 1000)
       const now = new Date();
