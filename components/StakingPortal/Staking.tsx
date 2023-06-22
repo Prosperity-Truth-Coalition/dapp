@@ -40,8 +40,8 @@ const Staking = () => {
 
   useEffect(() => {
     if (address) {
-      fetch(`${config.api}/is_valid/${address}`).then((res) => res.json()).then((data) => {
-        setStakeValidity(data.is_valid);
+      fetch(`${config.api}/is_valid/<address>?address=${address}`).then((res) => res.json()).then((data) => {
+        setStakeValidity(!data.is_staking_violated);
       });
     }
   }, [address]);
@@ -341,16 +341,16 @@ const Staking = () => {
 
 
 
-  useEffect(() => {
-    const URL = `${config.api}/last_window`;
-    fetch(URL)
-      .then((res) => res.json())
-      .then((data) => {
+  // useEffect(() => {
+  //   const URL = `${config.api}/last_window`;
+  //   fetch(URL)
+  //     .then((res) => res.json())
+  //     .then((data) => {
        
-        setLastStakeTimeStamp(data.timestamp);
-      });
-  }
-    , []);
+  //       setLastStakeTimeStamp(data.timestamp);
+  //     });
+  // }
+  //   , []);
 
 
 
@@ -404,7 +404,7 @@ const Staking = () => {
     return () => {
       clearInterval(timeInterval);
     }
-  }, [lastStakeTimeStamp]);
+  }, []);
 
 
   useEffect(() => {
