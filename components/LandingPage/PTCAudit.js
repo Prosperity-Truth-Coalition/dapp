@@ -1,9 +1,9 @@
 import React from "react";
-
+import Link from "next/link";
 
 import GoldBgBtn from "./common/GoldBgBtn";
 import TransparentBgBtn from "./common/TransparentBgBtn";
-
+import { constants } from "../../config/constants";
 const AuditPhoto1 = "/assets/images/Audit_photo1.png";
 const PTCAudit = () => {
   return (
@@ -29,8 +29,15 @@ const PTCAudit = () => {
           </p>
 
           <div className="mt-5 flex flex-col items-center justify-center gap-4 xs:flex-row md:flex-col lg:flex-row">
-            <GoldBgBtn btnLabel="MEDIUM" />
-            <TransparentBgBtn btnLabel="JOIN DISCORD" />
+            <Link href={constants.medium} passHref>
+              <a>
+                <GoldBgBtn btnLabel="MEDIUM" />
+              </a>
+            </Link>
+            <Link href={constants.discord} passHref>
+              <a> <TransparentBgBtn btnLabel="JOIN DISCORD" /></a>
+            </Link>
+
           </div>
         </div>
 

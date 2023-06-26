@@ -2,6 +2,8 @@ import React from "react";
 import Link from "next/link";
 import GoldBgBtn from "./common/GoldBgBtn";
 import TransparentBgBtn from "./common/TransparentBgBtn";
+import { constants } from "../../config/constants";
+
 const NFTCollections = () => {
   return (
     <div className="text-white py-10 flex flex-col gap-8 xl:px-28">
@@ -39,13 +41,16 @@ const NFTCollections = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4 xs:flex-row lg:justify-start lg:row-span-1">
-          <GoldBgBtn btnLabel="WHITEPAPER" />
-         
-        <Link href='/dapp' passHref>
-          <a>
-            <TransparentBgBtn btnLabel="ENTER DAPP" />
-          </a>
-        </Link>
+          <Link href={constants.whitepaper} passHref>
+            <a>
+              <GoldBgBtn btnLabel="WHITEPAPER" />
+            </a>
+          </Link>
+          <Link href='/dapp' passHref>
+            <a>
+              <TransparentBgBtn btnLabel="ENTER DAPP" />
+            </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React from "react";
-
+import { constants } from "../../config/constants";
+import { Link } from "iconsax-react";
 const Footer = () => {
   return (
     <footer className="text-white py-10 flex flex-col gap-8 xl:px-28">
@@ -20,6 +21,7 @@ const Footer = () => {
           <div className="flex flex-col gap-4">
             <div className="font-[600] flex gap-2 items-center">
               <h1>DISCORD</h1>
+              
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
