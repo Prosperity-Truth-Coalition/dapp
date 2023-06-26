@@ -1,66 +1,45 @@
 import type { NextPage } from "next";
-import Head from "next/head";
-import Header from "../components/Header/Header";
-import Stats from "../components/Stats/Stats";
-import Tabs from "../components/Tabs/Tabs";
-import Burn from "../components/BurningPortal/Burn";
-import { useRecoilValue } from "recoil";
-import { selectedTabState } from "../atoms/selectedTab";
-import { Toaster } from "react-hot-toast";
-import Staking from "../components/StakingPortal/Staking";
-import { useEffect, useState } from "react";
-import PreLoader from "../components/Preloader/PreLoader";
-import Footer from "../components/Footer";
-import Dex from "../components/DexWidget/Dex";
-
+import Footer from "../components/LandingPage/Footer";
+import HeroSection from "../components/LandingPage/HeroSection";
+import NFTCollections from "../components/LandingPage/NFTCollections";
+import OfficialPartners from "../components/LandingPage/OfficialPartners";
+import POHIntro from "../components/LandingPage/POHIntro";
+import PTCAudit from "../components/LandingPage/PTCAudit";
+import PTCEcosystem from "../components/LandingPage/PTCEcosystem";
 
 
 const Home: NextPage = () => {
 
-  const selectedTab = useRecoilValue(selectedTabState);
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 2500);
-  }, [])
-
+ 
 
 
 
   return (
-    <div className=" w-full min-h-[100vh] px-4 py-4 sm:px-8 sm:py-6 lg:px-12">
-      <Head>
-        <title>PTC - Prosperity Truth Coalition</title>
-        <meta content="$PTC Token is bringing value and utility! Buy it, Win it, Sell it, Stake it, Burn it, and Spend it! Come join our amazing community today!" name="description" />
-        <link href="/favicon.ico" rel="icon" />
-       
-        
-      </Head>
-      <Toaster />
-      {loading ? <PreLoader /> :
-        <>
-          <header className="   sm:px-12  sm:gap-12">
-            <Header />
-          </header>
+    
+    <div id="homePage" className="homePage bg-[url('/assets/images/Landing_area_BG_mobile_version.png')] sm:bg-[url('/assets/images/Landing_area_BG.png')] bg-contain bg-no-repeat bg-black font-fmbolyarsanspro w-full px-6 flex items-center justify-center sm:px-12 md:px-18 lg:px-24 xl:px-0">
+    <div className="w-full max-w-[1280px]">
+      <HeroSection />
+      <POHIntro />
+      <NFTCollections />
+      <PTCEcosystem />
+      <PTCAudit />
+      <OfficialPartners />
+      <Footer />
 
-          <main className="mt-8 md:px-6 flex flex-col gap-8 sm:px-12 sm:mt-16 sm:gap-12">
-            <Stats />
-            <Tabs />
+      {/* <POHIntro />
 
-            {selectedTab === "burn" && <Burn />}
-            {selectedTab === "stake" && <Staking />}
-            {selectedTab === "trade" && <Dex />}
+      <NFTCollections />
 
+      <PTCEcosystem />
 
-            {/* <Burn/> */}
-          </main>
-          <Footer/>
-        </>
+      <PTCAudit />
 
-      }
+      <OfficialPartners />
+
+      <Footer /> */}
     </div>
+  </div>
   );
 };
 
