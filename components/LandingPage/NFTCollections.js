@@ -1,5 +1,5 @@
 import React from "react";
-
+import Link from "next/link";
 import GoldBgBtn from "./common/GoldBgBtn";
 import TransparentBgBtn from "./common/TransparentBgBtn";
 const NFTCollections = () => {
@@ -40,8 +40,12 @@ const NFTCollections = () => {
 
         <div className="flex flex-col items-center justify-center gap-4 xs:flex-row lg:justify-start lg:row-span-1">
           <GoldBgBtn btnLabel="WHITEPAPER" />
-
-          <TransparentBgBtn btnLabel="ENTER DAPP" />
+         
+        <Link href='/dapp' passHref>
+          <a>
+            <TransparentBgBtn btnLabel="ENTER DAPP" />
+          </a>
+        </Link>
         </div>
       </div>
     </div>

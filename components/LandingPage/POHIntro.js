@@ -2,7 +2,12 @@ import React from "react";
 import GoldBgBtn from "./common/GoldBgBtn";
 import TransparentBgBtn from "./common/TransparentBgBtn";
 
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 const POHIntro = () => {
+
+  const router = useRouter();
   return (
     <div className="text-white grid items-center gap-y-8 pt-10 pb-5 xl:px-28">
       <h1 className="text-xl font-[600] sm:text-2xl lg:text-4xl">
@@ -34,7 +39,11 @@ const POHIntro = () => {
       <div className="col-span-2 flex flex-col items-center justify-center gap-4 xs:flex-row md:justify-start">
         <GoldBgBtn btnLabel="WHITEPAPER" />
 
-        <TransparentBgBtn btnLabel="ENTER DAPP" />
+        <Link href='/dapp' passHref>
+          <a>
+            <TransparentBgBtn btnLabel="ENTER DAPP" />
+          </a>
+        </Link>
       </div>
     </div>
   );
