@@ -7,8 +7,8 @@ const OfficialPartners = () => {
   const images = [
     { image: One, title: "ONE TOKEN" },
     { image: Coin, title: "ZOIN TOKEN" },
-    { image: One, title: "Image 3" },
-    { image: Coin, title: "Image 4" },
+    // { image: One, title: "Image 3" },
+    // { image: Coin, title: "Image 4" },
   ]; // Add more images with titles if needed
   const [startIndex, setStartIndex] = useState(0);
 

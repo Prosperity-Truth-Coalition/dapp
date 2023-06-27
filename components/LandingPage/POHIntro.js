@@ -14,7 +14,7 @@ const POHIntro = () => {
       </h1>
 
       <Link href={constants.tokenLink}>
-        <p className="text-gold text-xs font-[300] text-center sm:text-base lg:text-end">
+        <p className="text-gold text-xs font-[300] text-center sm:text-base lg:text-end cursor-pointer">
         PTC TOKEN CONTRACT ADDRESS (BSCSCAN)
         </p>
         </Link>
