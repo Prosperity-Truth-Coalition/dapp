@@ -1,5 +1,7 @@
 import React from "react";
 import GoldBgBtn from "./common/GoldBgBtn";
+import Link from "next/link";
+import { constants } from "../../config/constants";
 
 const PTCEcosystem = () => {
   return (
@@ -19,8 +21,10 @@ const PTCEcosystem = () => {
             experience that will enable them to achieve their financial goals.
           </p>
         </div>
+        <Link href={constants.whitepaper + "ptc-information/utilities"} passHref>
+          <a> <GoldBgBtn btnLabel="UTILITIES" /></a>
+        </Link>
 
-        <GoldBgBtn btnLabel="UTILITIES" />
       </div>
 
       <div className="text-white grid gap-5 lg:grid-cols-3">

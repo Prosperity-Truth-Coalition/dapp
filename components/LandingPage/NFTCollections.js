@@ -41,14 +41,12 @@ const NFTCollections = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4 xs:flex-row lg:justify-start lg:row-span-1">
-          <Link href={constants.whitepaper} passHref>
+          
+              <GoldBgBtn btnLabel="Coming Soon" />
+            
+          <Link href={constants.whitepaper + "nft-collections/intro"} passHref>
             <a>
-              <GoldBgBtn btnLabel="WHITEPAPER" />
-            </a>
-          </Link>
-          <Link href='/dapp' passHref>
-            <a>
-              <TransparentBgBtn btnLabel="ENTER DAPP" />
+              <TransparentBgBtn btnLabel="Read More" />
             </a>
           </Link>
         </div>

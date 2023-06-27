@@ -13,9 +13,12 @@ const POHIntro = () => {
         What is POH?
       </h1>
 
-      <p className="text-gold text-xs font-[300] text-center sm:text-base lg:text-end">
+      <Link href={constants.tokenLink}>
+        <p className="text-gold text-xs font-[300] text-center sm:text-base lg:text-end">
         PTC TOKEN CONTRACT ADDRESS (BSCSCAN)
-      </p>
+        </p>
+        </Link>
+     
 
       <div className="col-span-2 text-sm font-[300] leading-relaxed flex flex-col gap-8 lg:text-base lg:gap-4">
         <p>
@@ -36,7 +39,7 @@ const POHIntro = () => {
       </div>
 
       <div className="col-span-2 flex flex-col items-center justify-center gap-4 xs:flex-row md:justify-start">
-      <Link href={constants.medium} passHref>
+      <Link href={constants.whitepaper} passHref>
           <a>
           <GoldBgBtn btnLabel="WHITEPAPER" />
           </a>
