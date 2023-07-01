@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useContractRead, usePrepareContractWrite } from "wagmi";
-import { writeContract,prepareWriteContract} from "@wagmi/core";
+import { writeContract, prepareWriteContract } from "@wagmi/core";
 import toast from "react-hot-toast";
 import { useAccount } from "wagmi";
 import { erc20ABI } from "wagmi";
@@ -16,8 +16,8 @@ import { leaves } from "../../config/leave.js";
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
 
-import { encodePacked} from 'viem';
-import {rewards} from "../../config/rewards.js";
+import { encodePacked } from 'viem';
+import { rewards } from "../../config/rewards.js";
 
 const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
@@ -31,7 +31,7 @@ const Staking = () => {
   const [lastStakeTimeStamp, setLastStakeTimeStamp] = useState(0);
   const [merkleProof, setMerkleProof] = useState<null | String[]>(null);
 
-  
+
   const [timeLeft, setTimeLeft] = useState("00:00:00");
   const [timeLeftForClaim, setTimeLeftForClaim] = useState("00:00:00");
 
@@ -135,7 +135,7 @@ const Staking = () => {
     args: [currentStakingId, address as Address],
   });
 
-  
+
 
 
 
@@ -222,7 +222,7 @@ const Staking = () => {
         toast.error("Amount is more than maximum staking amount");
         return;
       }
-      if(stakePrepareError.message.includes("Arithmic operation resulted in underflow or overflow.")) {
+      if (stakePrepareError.message.includes("Arithmic operation resulted in underflow or overflow.")) {
         toast.error("Amount is less than minimum staking amount");
         return;
       }
@@ -278,39 +278,39 @@ const Staking = () => {
     }
   }
 
-  const stakingData_ = stakingData as Array<BigNumber | BigNumber |BigNumber| Boolean> ? stakingData as Array<BigNumber | BigNumber | BigNumber| Boolean> : [0, 0,0, false];
+  const stakingData_ = stakingData as Array<BigNumber | BigNumber | BigNumber | Boolean> ? stakingData as Array<BigNumber | BigNumber | BigNumber | Boolean> : [0, 0, 0, false];
 
 
-  const isValidForReward = (address : string) => {
-    const rewards_ = rewards.filter((reward : {
+  const isValidForReward = (address: string) => {
+    const rewards_ = rewards.filter((reward: {
       address: string;
-      
+
 
     }) => reward.address === address);
-    
-    if(rewards_.length > 0){
+
+    if (rewards_.length > 0) {
       return true;
     }
     return false;
   }
 
-  const getReward = (address:string) => {
-    const rewards_ = rewards.filter((reward : {
+  const getReward = (address: string) => {
+    const rewards_ = rewards.filter((reward: {
       address: string;
-      
+
 
     }) => reward.address === address);
     return rewards_[0].amount.toString();
   }
 
 
-  const getStaticReward = (address:Address) => {
-    if(!isValidForReward(address)){
+  const getStaticReward = (address: Address) => {
+    if (!isValidForReward(address)) {
       return 0;
     }
 
-     
-   const reward = getReward(address);
+
+    const reward = getReward(address);
     const reward_ = (parseFloat(reward) / (10 ** 18)).toFixed(5);
     return reward_.toString();
   }
@@ -321,17 +321,17 @@ const Staking = () => {
     const humanFriendlyTotalStaked = humanFriendlyBalance(totalStaked, config.decimals);
     const userStaked = humanFriendlyBalance(stakingData_[0], config.decimals);
     const poolShare = (parseFloat(userStaked) / parseFloat(humanFriendlyTotalStaked)) * 100;
-    const xrpReward = (poolShare / 100) * (humanFriendlyXRPBalance) ;
+    const xrpReward = (poolShare / 100) * (humanFriendlyXRPBalance);
 
     const xrpRewardRounded = xrpReward.toFixed(5)
     const poolShareRounded = poolShare.toFixed(5);
 
-    
+
 
     return {
       "poolShare": poolShareRounded,
       "xrpReward": xrpRewardRounded,
-      
+
       "xrpRewardNotRounded": rewards,
     };
 
@@ -346,7 +346,7 @@ const Staking = () => {
   //   fetch(URL)
   //     .then((res) => res.json())
   //     .then((data) => {
-       
+
   //       setLastStakeTimeStamp(data.timestamp);
   //     });
   // }
@@ -355,56 +355,61 @@ const Staking = () => {
 
 
   useEffect(() => {
-    const timeLeftForNewWindow = () => {
+    const timeRemainingForNewStake = (lastEnabledAt: BigInt) => {
+      const lastTimeStamp = Number(lastEnabledAt);
+      const ThirtyDaysFutureFromLastTimeStamp = lastTimeStamp + 2592000;
 
 
-      const lastStakeTime = new Date(lastStakeDisabledAt ? Number(lastStakeDisabledAt.toString()) * 1000 : new Date().getTime() * 1000);
-      //future date = lastStakeTime+30 days
-      const futureDate = new Date(lastStakeTime.getTime() + 31.4 * 24 * 60 * 60 * 1000)
-      const now = new Date();
 
-      const diff = futureDate.getTime() - now.getTime();
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      const timeLeft = `${days} D: ${hours} H: ${minutes} M: ${seconds}S`;
-      return timeLeft;
+      const now = Date.now() / 1000;
+      //time is in bigint format that represents timestamps
+      const timeRemaining = Number(ThirtyDaysFutureFromLastTimeStamp) - now;
+      //const timeRemaining =  -1;
+      const days = Math.floor(timeRemaining / 86400);
+      const hours = Math.floor((timeRemaining % 86400) / 3600);
+      const minutes = Math.floor(((timeRemaining % 86400) % 3600) / 60);
+      const seconds = Math.floor(((timeRemaining % 86400) % 3600) % 60);
 
 
-    }
-    const timeLeftForClaim = () => {
-      
-      const lastStakeTime = new Date(lastStakeDisabledAt ? Number(lastStakeDisabledAt.toString()) * 1000 : new Date().getTime() * 1000);
-      //future date = lastStakeTime+30 days
-      const futureDate = new Date(lastStakeTime.getTime() + 30* 24 * 60 * 60 * 1000)
-      const now = new Date();
 
-      const diff = futureDate.getTime() - now.getTime();
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      const timeLeft = `${days} D: ${hours} H: ${minutes} M: ${seconds}S`;
-      if(days < 0){
-        return "Being Generated , Please Wait!"
-        }
-      return timeLeft;
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    };
+    const timeRemainingForNewClaim = (lastEnabledAt: BigInt) => {
+      const lastTimeStamp = Number(lastEnabledAt);
+      const ThirtyOneDaysFutureFromLastTimeStamp = lastTimeStamp + 2678400;
 
 
-    }
+
+      const now = Date.now() / 1000;
+      //time is in bigint format that represents timestamps
+      const timeRemaining = Number(ThirtyOneDaysFutureFromLastTimeStamp) - now;
+      //const timeRemaining =  -1;
+      const days = Math.floor(timeRemaining / 86400);
+      const hours = Math.floor((timeRemaining % 86400) / 3600);
+      const minutes = Math.floor(((timeRemaining % 86400) % 3600) / 60);
+      const seconds = Math.floor(((timeRemaining % 86400) % 3600) % 60);
 
 
+
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    };
+
+    //@ts-ignore
     const timeInterval = setInterval(() => {
-      
-      setTimeLeft(timeLeftForNewWindow());
-      setTimeLeftForClaim(timeLeftForClaim());
+      if (lastStakeDisabledAt) {
+        //@ts-ignore
+        setTimeLeft(timeRemainingForNewStake(BigInt(lastStakeDisabledAt)));
+        //@ts-ignore
+        setTimeLeftForClaim(timeRemainingForNewClaim(BigInt(lastStakeDisabledAt)));
+      }
+
+
     }, 1000);
 
     return () => {
       clearInterval(timeInterval);
     }
-  }, []);
+  }, [lastStakeDisabledAt]);
 
 
   useEffect(() => {
@@ -412,61 +417,61 @@ const Staking = () => {
   }, [stakingData_]);
 
 
- 
 
 
-  function generateLeaf(address : Address ,amount : bigint){
 
-    
-    
+  function generateLeaf(address: Address, amount: bigint) {
+
+
+
     const hash = keccak256(encodePacked(
       ["address", "uint256"],
       [address, amount]
     ));
 
     const string = hash.toString('hex');
-    return "0x"+string;
+    return "0x" + string;
 
   }
 
   useEffect(() => {
 
-      if(address){
-        if(isValidForReward(address)){
+    if (address) {
+      if (isValidForReward(address)) {
 
-          console.log("address is valid for reward")
-          const rewardAmount = getReward(address);
-          const leaf = generateLeaf(address ,BigInt(rewardAmount))
-          const proof = merkleTree.getHexProof(leaf);
-          
-          setMerkleProof(proof);
-        } 
+        console.log("address is valid for reward")
+        const rewardAmount = getReward(address);
+        const leaf = generateLeaf(address, BigInt(rewardAmount))
+        const proof = merkleTree.getHexProof(leaf);
 
-
+        setMerkleProof(proof);
       }
+
+
+    }
 
 
   }, [address]);
 
-  const { config: claimPrepareConfig, error: claimPrepareError, refetch : refetchClaim} = usePrepareContractWrite({
+  const { config: claimPrepareConfig, error: claimPrepareError, refetch: refetchClaim } = usePrepareContractWrite({
     abi: config.stakingAbi,
     enabled: true,
     address: config.staking as Address,
     functionName: "claim",
-    args: [merkleProof,isValidForReward(address as Address) ? getReward(address as Address) : '0'],
-    
+    args: [merkleProof, isValidForReward(address as Address) ? getReward(address as Address) : '0'],
+
   })
 
-  const { isSuccess:claimSuccess, writeAsync:claimWriteAsync } = useContractWrite(claimPrepareConfig);
+  const { isSuccess: claimSuccess, writeAsync: claimWriteAsync } = useContractWrite(claimPrepareConfig);
 
-  
+
 
 
   async function claim() {
 
 
     if (claimPrepareError) {
-      if(claimPrepareError.message.includes('Value "null" is not a valid array.')){
+      if (claimPrepareError.message.includes('Value "null" is not a valid array.')) {
         toast.error("You are not eligible for rewards");
         return;
       }
@@ -487,21 +492,21 @@ const Staking = () => {
         toast.error("Already Claimed");
         return;
       }
-      if(claimPrepareError.message.includes("You are Not whitelisted")){
+      if (claimPrepareError.message.includes("You are Not whitelisted")) {
         toast.error("You are not eligible for rewards");
         return;
       }
-      if(claimPrepareError.message.includes("Not staked")){
+      if (claimPrepareError.message.includes("Not staked")) {
         toast.error("You are not eligible for rewards");
         return;
       }
 
 
 
-      
-      
-  
-  
+
+
+
+
       toast.error(claimPrepareError.message);
       return;
     }
@@ -547,12 +552,12 @@ const Staking = () => {
               },
             });
           }
-  
+
         });
     }
   }
 
-  
+
 
 
 
@@ -707,7 +712,7 @@ const Staking = () => {
               onClick={claim}
               className="w-full flex justify-center gap-2 mt-2 bg-black rounded-lg py-2  pb-4 font-[200] transition-all duration-200 ease-linear hover:bg-[#000000b3]"
               disabled={!rewardsClaimable}
-              
+
 
             >
               {rewardsClaimable ? "Claim" : "!! Not Active !!"}
