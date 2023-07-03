@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 const One ="/assets/images/one.png";
 const Coin ="/assets/images/vuL6vbn.png";
+import Link from "next/link";
 
 const OfficialPartners = () => {
   const images = [
-    { image: One, title: "ONE TOKEN" },
-    { image: Coin, title: "ZOIN TOKEN" },
+    { image: One, title: "ONE TOKEN",link:"https://www.onetokenburn.com/" },
+    { image: Coin, title: "ZOIN TOKEN",link:"https://zointoken.net/" },
     // { image: One, title: "Image 3" },
     // { image: Coin, title: "Image 4" },
   ]; // Add more images with titles if needed
@@ -40,7 +41,8 @@ const OfficialPartners = () => {
           {images
             .slice(startIndex, startIndex + 2)
             .map((item, index) => (
-              <div key={index} className="flex-shrink-0">
+              <Link href={item.link} passHref>
+              <div key={index} className="flex-shrink-0 cursor-pointer">
                 <div className="flex gap-2 items-center xs:gap-4">
                   <img
                     src={item.image}
@@ -52,6 +54,7 @@ const OfficialPartners = () => {
                   </p>
                 </div>
               </div>
+              </Link>
             ))}
         </div>
 
