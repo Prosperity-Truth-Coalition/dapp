@@ -27,9 +27,16 @@ const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
 const Staking = () => {
 
+  const hardCodedClaimTimer = true;
+  const hardCoderTimers = {
+    "newStakingWindow" : 1689436800,
+    "claimWindow": 1689350400
+  }
+
   const [stakeValidity, setStakeValidity] = useState(false);
   const [lastStakeTimeStamp, setLastStakeTimeStamp] = useState(0);
   const [merkleProof, setMerkleProof] = useState<null | String[]>(null);
+  
 
 
   const [timeLeft, setTimeLeft] = useState("00:00:00");
@@ -340,24 +347,14 @@ const Staking = () => {
 
 
 
-
-  // useEffect(() => {
-  //   const URL = `${config.api}/last_window`;
-  //   fetch(URL)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-
-  //       setLastStakeTimeStamp(data.timestamp);
-  //     });
-  // }
-  //   , []);
-
-
-
   useEffect(() => {
     const timeRemainingForNewStake = (lastEnabledAt: BigInt) => {
-      const lastTimeStamp = Number(lastEnabledAt);
-      const ThirtyDaysFutureFromLastTimeStamp = lastTimeStamp + 2592000;
+      let lastTimeStamp = Number(lastEnabledAt);
+
+      let ThirtyDaysFutureFromLastTimeStamp = lastTimeStamp + 2592000;
+      if(hardCodedClaimTimer){
+        ThirtyDaysFutureFromLastTimeStamp = hardCoderTimers.newStakingWindow
+      }
 
 
 
@@ -376,7 +373,10 @@ const Staking = () => {
     };
     const timeRemainingForNewClaim = (lastEnabledAt: BigInt) => {
       const lastTimeStamp = Number(lastEnabledAt);
-      const ThirtyOneDaysFutureFromLastTimeStamp = lastTimeStamp + 2678400;
+      let ThirtyOneDaysFutureFromLastTimeStamp = lastTimeStamp + 2678400;
+      if(hardCodedClaimTimer){
+        ThirtyOneDaysFutureFromLastTimeStamp = hardCoderTimers.claimWindow;
+      }
 
 
 
