@@ -32,7 +32,7 @@ const Staking = () => {
   const hardCodedClaimTimer = true;
   const hardCoderTimers = {
     "newStakingWindow" : 1689436800,
-    "claimWindow": 1689350400 + 3600 + 600 ,
+    "claimWindow": 1689350400 + 3600 + 600 +300 ,
   }
 
   const [stakeValidity, setStakeValidity] = useState(false);
