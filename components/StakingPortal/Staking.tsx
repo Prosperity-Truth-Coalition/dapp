@@ -12,16 +12,16 @@ import { useBalance } from "wagmi";
 import { useContractWrite } from "wagmi";
 import { waitForTransaction } from "@wagmi/core";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { leaves } from "../../config/leave.js";
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
 
 import { encodePacked } from 'viem';
-import { rewards } from "../../config/rewards.js";
-
-const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
 
+interface RewardsData{
+  address: string,
+  amount: string
+}
 
 
 
@@ -30,12 +30,33 @@ const Staking = () => {
   const hardCodedClaimTimer = true;
   const hardCoderTimers = {
     "newStakingWindow" : 1689436800,
-    "claimWindow": 1689350400
+    "claimWindow": 1689350400 + 3600,
   }
 
   const [stakeValidity, setStakeValidity] = useState(false);
   const [lastStakeTimeStamp, setLastStakeTimeStamp] = useState(0);
   const [merkleProof, setMerkleProof] = useState<null | String[]>(null);
+  const [rewards, setRewards] = useState<RewardsData[]>([]);
+  const [leaves, setLeaves] = useState<String[]>([]);
+
+
+  useEffect(() => {
+
+    fetch(config.api + "/get_rewards").then((res) => res.json()).then((data) => {
+      setRewards(data);
+    }).catch((err) => {
+      console.log(err);
+    });
+
+
+    fetch(config.merkleApi + "/get_leaves").then((res) => res.json()).then((data) => {
+      setLeaves(data);
+    }).catch((err) => {
+      console.log(err);
+    });
+
+  }, []);
+
   
 
 
@@ -90,7 +111,7 @@ const Staking = () => {
     address: config.staking as Address,
     functionName: "rewardsClaimable",
   });
-
+  // const rewardsClaimable = true;
 
   const { data: currentStakingId } = useContractRead({
     abi: config.stakingAbi,
@@ -289,6 +310,8 @@ const Staking = () => {
 
 
   const isValidForReward = (address: string) => {
+
+    
     const rewards_ = rewards.filter((reward: {
       address: string;
 
@@ -302,6 +325,7 @@ const Staking = () => {
   }
 
   const getReward = (address: string) => {
+    
     const rewards_ = rewards.filter((reward: {
       address: string;
 
@@ -339,7 +363,7 @@ const Staking = () => {
       "poolShare": poolShareRounded,
       "xrpReward": xrpRewardRounded,
 
-      "xrpRewardNotRounded": rewards,
+      "xrpRewardNotRounded": xrpReward,
     };
 
   }
@@ -437,7 +461,12 @@ const Staking = () => {
   useEffect(() => {
 
     if (address) {
+
       if (isValidForReward(address)) {
+
+        
+
+        const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
         console.log("address is valid for reward")
         const rewardAmount = getReward(address);
@@ -692,8 +721,8 @@ const Staking = () => {
               <input
                 type="text"
                 id="stakeAmount"
-                // value={getStaticReward(address as Address) + " XRP"}
-                value={getUserPoolShare().xrpReward + " XRP"}
+                value={getStaticReward(address as Address) + " XRP"}
+                // value={getUserPoolShare().xrpReward + " XRP"}
                 disabled
                 className={`${isConnected ? "hover:border-[#FFFFFF] focus:border-[#FFFFFF]" : ""
                   } bg-[#1A1A1A] rounded-lg px-3 py-3 outline-none border border-[#FFFFFF59] transition-all duration-200 ease-linear w-full `}

@@ -1193,7 +1193,8 @@ export const config = {
     },
     { stateMutability: "payable", type: "receive" },
   ],
-  api : "https://squid-app-ywxtd.ondigitalocean.app"
+  api : "https://squid-app-ywxtd.ondigitalocean.app",
+  "merkleApi" : "https://jellyfish-app-ka2q4.ondigitalocean.app"
 };
 
 export function abbreviateNumber(number){
