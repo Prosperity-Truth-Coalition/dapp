@@ -12,6 +12,8 @@ import { useBalance } from "wagmi";
 import { useContractWrite } from "wagmi";
 import { waitForTransaction } from "@wagmi/core";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+
+import { readContract } from "@wagmi/core";
 import MerkleTree from "merkletreejs";
 import keccak256 from "keccak256";
 
@@ -30,7 +32,7 @@ const Staking = () => {
   const hardCodedClaimTimer = true;
   const hardCoderTimers = {
     "newStakingWindow" : 1689436800,
-    "claimWindow": 1689350400 + 3600,
+    "claimWindow": 1689350400 + 3600 + 600 ,
   }
 
   const [stakeValidity, setStakeValidity] = useState(false);
@@ -39,6 +41,25 @@ const Staking = () => {
   const [rewards, setRewards] = useState<RewardsData[]>([]);
   const [leaves, setLeaves] = useState<String[]>([]);
 
+
+  useEffect(() => {
+    console.log("merkleProof", merkleProof);
+    if(merkleProof && isValidForReward(address as Address)){
+      readContract({
+        abi: config.stakingAbi,
+        address: config.staking as Address,
+        functionName: "isValidRewardProof",
+        args: [address,getReward(address as Address),merkleProof],
+      }).then((res) => {
+        console.log("res", res);
+      }
+      ).catch((err) => {
+        console.log("err", err);
+      }
+      );
+    }
+  }
+  , [merkleProof]);
 
   useEffect(() => {
 
@@ -184,10 +205,6 @@ const Staking = () => {
         error: "Approval failed",
       },
     );
-
-
-
-
   }
 
 
@@ -342,6 +359,7 @@ const Staking = () => {
 
 
     const reward = getReward(address);
+    
     const reward_ = (parseFloat(reward) / (10 ** 18)).toFixed(5);
     return reward_.toString();
   }
@@ -465,7 +483,7 @@ const Staking = () => {
       if (isValidForReward(address)) {
 
         
-
+        console.log("address is valid for reward")
         const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
 
         console.log("address is valid for reward")
@@ -480,7 +498,7 @@ const Staking = () => {
     }
 
 
-  }, [address]);
+  }, [address,activeTab]);
 
   const { config: claimPrepareConfig, error: claimPrepareError, refetch: refetchClaim } = usePrepareContractWrite({
     abi: config.stakingAbi,
