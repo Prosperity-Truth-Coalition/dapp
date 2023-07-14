@@ -498,7 +498,7 @@ const Staking = () => {
     }
 
 
-  }, [address,activeTab]);
+  }, [address,activeTab,rewards]);
 
   const { config: claimPrepareConfig, error: claimPrepareError, refetch: refetchClaim } = usePrepareContractWrite({
     abi: config.stakingAbi,
